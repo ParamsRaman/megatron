@@ -549,6 +549,9 @@ def _add_regularization_args(parser):
     group.add_argument('--adam-beta2', type=float, default=0.999,
                        help='Second coefficient for computing running averages '
                        'of gradient and its square')
+    group.add_argument('--adan-beta3', type=float, default=0.999,
+                       help='Third coefficient for computing running averages '
+                       '(used in Adan)')
     group.add_argument('--adam-eps', type=float, default=1e-08,
                        help='Term added to the denominator to improve'
                        'numerical stability')
@@ -656,7 +659,7 @@ def _add_training_args(parser):
                        help='use FlashAttention implementation of attention. '
                        'https://arxiv.org/abs/2205.14135')
     group.add_argument('--optimizer', type=str, default='adam',
-                       choices=['adam', 'sgd'],
+                       #choices=['adam', 'sgd'],
                        help='Optimizer function')
     group.add_argument('--dataloader-type', type=str, default=None,
                        choices=['single', 'cyclic'],
@@ -679,6 +682,9 @@ def _add_training_args(parser):
                        help='Disable fusing gradient accumulation to weight '
                        'gradient computation of linear layers',
                        dest='gradient_accumulation_fusion')
+    group.add_argument('--alpha', default=1.0, type=float)
+    group.add_argument('--solution', default=0, type=int,
+                       help='0: local weight and update norm; 1: S1; 2: S2; 3: S3')
     return parser
 
 

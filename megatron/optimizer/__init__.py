@@ -1,7 +1,7 @@
 # Copyright (c) 2022, NVIDIA CORPORATION. All rights reserved.
 
-from apex.optimizers import FusedAdam as Adam
-from apex.optimizers import FusedSGD as SGD
+#from apex.optimizers import FusedAdam as Adam
+#from apex.optimizers import FusedSGD as SGD
 
 from megatron import get_args
 
@@ -73,16 +73,99 @@ def get_megatron_optimizer(model,
                                     lr_mult)
 
     if args.optimizer == 'adam':
+        from apex.optimizers import FusedAdam as Adam
         optimizer = Adam(param_groups,
                          lr=args.lr,
                          weight_decay=args.weight_decay,
                          betas=(args.adam_beta1, args.adam_beta2),
                          eps=args.adam_eps)
     elif args.optimizer == 'sgd':
+        from apex.optimizers import FusedSGD as SGD
         optimizer = SGD(param_groups,
                         lr=args.lr,
                         weight_decay=args.weight_decay,
                         momentum=args.sgd_momentum)
+    elif args.optimizer == 'lamb':
+        from apex.optimizers import FusedLAMB as LAMB
+        optimizer = LAMB(param_groups,
+                         lr=args.lr,
+                         weight_decay=args.weight_decay,
+                         betas=(args.adam_beta1, args.adam_beta2),
+                         eps=args.adam_eps)
+    elif args.optimizer == 'ptadam':
+        from .ptadam import Adam
+        optimizer = Adam(param_groups,
+                         lr=args.lr,
+                         weight_decay=args.weight_decay,
+                         betas=(args.adam_beta1, args.adam_beta2),
+                         eps=args.adam_eps)
+    elif args.optimizer == 'ptadamw':
+        from .ptadamw import AdamW
+        optimizer = AdamW(param_groups,
+                         lr=args.lr,
+                         weight_decay=args.weight_decay,
+                         betas=(args.adam_beta1, args.adam_beta2),
+                         eps=args.adam_eps)
+    elif args.optimizer == 'myadam':
+        from .myadam import MyAdam
+        optimizer = MyAdam(param_groups,
+                           lr=args.lr,
+                           weight_decay=args.weight_decay,
+                           betas=(args.adam_beta1, args.adam_beta2),
+                           eps=args.adam_eps)
+    elif args.optimizer == 'myadamw':
+        from .myadamw import MyAdamW
+        optimizer = MyAdamW(param_groups,
+                            lr=args.lr,
+                            weight_decay=args.weight_decay,
+                            betas=(args.adam_beta1, args.adam_beta2),
+                            eps=args.adam_eps)
+    elif args.optimizer == 'lans':
+        from .lans import LANS
+        optimizer = LANS(param_groups,
+                         lr=args.lr,
+                         weight_decay=args.weight_decay,
+                         betas=(args.adam_beta1, args.adam_beta2),
+                         eps=args.adam_eps)
+    elif args.optimizer == 'mylamb':
+        from .mylamb import MyLAMB
+        optimizer = MyLAMB(param_groups,
+                           lr=args.lr,
+                           weight_decay=args.weight_decay,
+                           betas=(args.adam_beta1, args.adam_beta2),
+                           eps=args.adam_eps)
+    elif args.optimizer == 'mylamb2':
+        from .mylamb2 import MyLAMB2 # layer-wise noise
+        optimizer = MyLAMB2(param_groups,
+                            lr=args.lr,
+                            weight_decay=args.weight_decay,
+                            betas=(args.adam_beta1, args.adam_beta2),
+                            eps=args.adam_eps,
+                            alpha=args.alpha)
+    elif args.optimizer == 'mylamb3':
+        from .mylamb3 import MyLAMB3 # tune up param0 lr
+        optimizer = MyLAMB3(param_groups,
+                            lr=args.lr,
+                            weight_decay=args.weight_decay,
+                            betas=(args.adam_beta1, args.adam_beta2),
+                            eps=args.adam_eps,
+                            alpha=args.alpha)
+    elif args.optimizer == 'lambtp':
+        from .lambtp import LAMBTP # lamb tensor parallel test
+        optimizer = LAMBTP(param_groups,
+                           lr=args.lr,
+                           weight_decay=args.weight_decay,
+                           betas=(args.adam_beta1, args.adam_beta2),
+                           eps=args.adam_eps,
+                           solution=args.solution)
+    elif args.optimizer == 'adan':
+        from .adan import Adan
+        optimizer = Adan(param_groups,
+                            lr=args.lr,
+                            betas=(args.adam_beta1, args.adam_beta2, args.adan_beta3),
+                            eps=args.adam_eps,
+                            weight_decay=args.weight_decay,
+                            )
     else:
         raise Exception('{} optimizer is not supported.'.format(
             args.optimizer))
