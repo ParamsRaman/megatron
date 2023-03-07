@@ -166,6 +166,13 @@ def get_megatron_optimizer(model,
                             eps=args.adam_eps,
                             weight_decay=args.weight_decay,
                             )
+    elif args.optimizer == 'lion':
+        from .lion import Lion
+        optimizer = Lion(param_groups,
+                            lr=args.lr,
+                            betas=(args.adam_beta1, args.adam_beta2),
+                            weight_decay=args.weight_decay,
+                            )
     else:
         raise Exception('{} optimizer is not supported.'.format(
             args.optimizer))
