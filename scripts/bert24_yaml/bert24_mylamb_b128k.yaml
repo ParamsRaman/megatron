@@ -1,0 +1,46 @@
+name: "annnxu-bert24-mylamb-b128k"
+node_type: "p4d.24xlarge"
+node_num: 8
+image: 747303060528.dkr.ecr.us-east-2.amazonaws.com/mstar-eks:annnxu
+command: [
+    "/bin/sh",
+]
+args: [
+    "-c",
+    "cd /usr/local/src/megatron && mkdir -p /mnt_out/annnxu/$JOB_NAME && \
+     /usr/bin/python3 -m torch.distributed.launch \
+           --nproc_per_node 8 \
+           --nnodes $NUM_NODES \
+           --node_rank $RANK \
+           --master_addr $JOB_NAME-master-0 \
+           --master_port $MASTER_PORT \
+           pretrain_bert.py \
+           --num-layers 24 \
+           --hidden-size 1024 \
+           --num-attention-heads 16 \
+           --micro-batch-size 4 \
+           --global-batch-size 131072 \
+           --seq-length 512 \
+           --max-position-embeddings 512 \
+           --train-iters 3906 \
+           --save /mnt_out/annnxu/$JOB_NAME/ \
+           --save-interval 3906 \
+           --data-path /mnt/annnxu/data/bert_text_sentence \
+           --vocab-file /mnt/annnxu/data/bert-large-uncased-vocab.txt \
+           --data-impl mmap \
+           --split 949,50,1 \
+           --distributed-backend nccl \
+           --lr 1e-2 \
+           --lr-decay-style linear \
+           --min-lr 1.0e-5 \
+           --lr-decay-iters 3866 \
+           --weight-decay 1e-2 \
+           --clip-grad 1.0 \
+           --lr-warmup-fraction 0.8 \
+           --log-interval 10 \
+           --eval-interval 100 \
+           --eval-iters 5 \
+           --fp16 \
+           --adam-eps 1e-6 \
+           --optimizer mylamb 2>&1 | tee -a /mnt_out/annnxu/$JOB_NAME/log-$JOB_NAME",
+]

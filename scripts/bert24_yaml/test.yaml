@@ -1,0 +1,16 @@
+name: "annnxu-test"
+node_type: "p4d.24xlarge"
+node_num: 1
+image: 747303060528.dkr.ecr.us-east-2.amazonaws.com/mstar-eks:annnxu
+command: [
+    "/bin/sh",
+]
+args: [
+    "-c",
+    "echo $MASTER_ADDR \
+          $MASTER_PORT \
+          $RANK \
+          $REAL_WORLD_SIZE \
+          $DEFAULT_ROOT_DIR \
+          >> /mnt_out/annnxu/tmp",
+]
