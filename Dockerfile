@@ -46,4 +46,5 @@ RUN TORCH_CUDA_ARCH_LIST="8.0 7.5 7.0" FORCE_CUDA=1 python3 -m pip install -v --
 WORKDIR /usr/local/src/
 RUN TORCH_CUDA_ARCH_LIST="8.0 7.5 7.0" FORCE_CUDA=1 python3 -m pip install regex ninja nltk pybind11 six
 #RUN git clone https://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@github.com/anxuthu/megatron.git
-RUN git clone https://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@github.com/anxuthu/megatron.git
+#RUN git clone https://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@github.com/anxuthu/megatron.git
+RUN git clone https://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@github.com/ParamsRaman/megatron.git
